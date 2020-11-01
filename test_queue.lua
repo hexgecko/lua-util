@@ -12,3 +12,5 @@ print(q:peek())
 print(q:pop())
 print(q:peek())
 print(q:pop())
+
+print("first: "..q.first.." last: "..q.last)

@@ -8,6 +8,7 @@ end
 
 function M:pop()
 	local first = self.first
+	if first > self.last then return nil end
 	local v = self[first]
 	self[first] = nil
 	self.first = first + 1
