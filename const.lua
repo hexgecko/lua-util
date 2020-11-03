@@ -5,12 +5,17 @@ TWO = hash("two")
 THREE = hash("three")
 FOUR = hash("four")
 
+HEAD = hash("head")
+TAIL = hash("tail")
+
+TICK = hash("tick")
+
 LEFT = hash("left")
 RIGHT = hash ("right")
 UP = hash("up")
 DOWN = hash("down")
 
-ANIM_DONE = hash("anim_done")
+ANIM_DONE = hash("animation_done")
 
 EAST = hash("east")
 WEST = hash("west")

@@ -11,7 +11,7 @@ local test = fsm.new({
 	{ TWO, RIGHT, ONE, print_back}
 })
 
-test:on_event(LEFT)
+test:event(LEFT)
 print(tostring(test.state == TWO))
-test:on_event(RIGHT)
+test:event(RIGHT)
 print(tostring(test.state == ONE))

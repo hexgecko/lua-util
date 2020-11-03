@@ -1,6 +1,6 @@
 local M = {}
 
-function M:on_event(ev)
+function M:event(ev)
 	local col = self[self.state]
 	if col ~= nil then
 		local nx = col[ev]
