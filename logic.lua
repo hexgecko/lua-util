@@ -11,7 +11,7 @@ function M:resume(a,b,c,d)
 	return nil
 end
 
-function M:wait(a,b,c,d)
+function M:wait_until(a,b,c,d)
 	local evset,s,ev = set.new({a,b,c,d})
 	repeat
 		s, ev = coroutine.yield()
@@ -29,13 +29,13 @@ function M:sleep(t)
 	until self.t >= t
 end
 
-function M.new(fn)
+function M.new(fn,a,b,c,d)
 	local obj = {
 		co = coroutine.create(fn),
 		t
 	}
 	local mt = setmetatable(obj, { __index = M })
-	coroutine.resume(obj.co, mt)
+	coroutine.resume(obj.co, mt, a, b, c, d)
 	return mt
 end
 
