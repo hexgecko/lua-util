@@ -1,37 +1,53 @@
 local M = {}
 
-function M:add(vortbl)
-	if type(vortbl) == "number" or type(vortbl) == "string" then
-		self[vortbl] = true
-	elseif type(vortbl == "table") then
-		for _,v in ipairs(vortbl) do
-			self[v] = true
-		end
-	end
-end
-
-function M:remove(vortbl)
-	if type(vortbl) == "number" or type(vortbl) == "string" then
-		self[vortbl] = nil
-	elseif type(vortbl == "table") then
-		for _,v in ipairs(vortbl) do
-			self[v] = nil
-		end
-	end
-end
-
 function M:has(v)
 	return self[v] == true
 end
 
-function M.new(tbl)
-	local obj = {}
-	if tbl ~= nil then
-		for _,v in ipairs(tbl) do
-			obj[v] = true
+local set_mt = function(obj)
+	return setmetatable(obj, {
+		__index = M,
+		__tostring = function(self)
+			local s = "{"
+			for e in pairs(self) do
+				s = s..tostring(e)..","
+			end
+			if #s > 1 then
+				return s:sub(1,-2).."}"
+			else
+				return "{}"
+			end
 		end
+	})
+end
+
+function M:union(b)
+	local obj = {}
+	for e in pairs(self) do obj[e] = true end
+	for e in pairs(b) do obj[e] = true end
+	return set_mt(obj)
+end
+
+function M:intersection(b)
+	local obj = {}
+	for e in pairs(self) do
+		if b:has(e) then obj[e] = true end
 	end
-	return setmetatable(obj, { __index = M})
+	return set_mt(obj)
+end
+
+function M:difference(b)
+	local obj = {}
+	for e in pairs(self) do
+		if not b:has(e) then obj[e] = true end
+	end
+	return set_mt(obj)
+end
+
+function M.new(...)
+	local obj = {}
+	for _,v in ipairs({...}) do obj[v] = true end
+	return set_mt(obj)
 end
 
 return M
