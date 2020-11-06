@@ -1,42 +1,53 @@
-
 local set = require("set")
+
 local M = {}
 
-function M:resume(a,b,c,d)
+function M:resume(...)
 	if coroutine.status(self.co) == "suspended" then
-		local ok,a,b,c,d = coroutine.resume(self.co, self, a,b,c,d)
+		local ok,ret = coroutine.resume(self.co, ...)
 		if not ok then error(a) end
-		return a,b,c,d
+		if ret ~= nil then
+			return table.unpack(ret)
+		else
+			return nil
+		end
 	end
 	return nil
 end
 
-function M:wait_until(a,b,c,d)
-	local evset,s,ev = set.new({a,b,c,d})
+function M:run(...)
+	return self:resume(self, ...)
+end
+
+function M:wait_until(...)
+	local ev
+	local evset = set.new(...)
 	repeat
-		s, ev = coroutine.yield()
+		ev = coroutine.yield()
 	until evset:has(ev)
 end
 
 function M:sleep(t)
-	local s,ev,dt
-	self.t = 0
+	local ev,dt
 	repeat
-		s,ev,dt= coroutine.yield()
+		ev,dt = coroutine.yield()
 		if ev == TICK then
 			self.t = self.t + dt
 		end
 	until self.t >= t
+	self.t = self.t - t
 end
 
-function M.new(fn,a,b,c,d)
+function M:yield(...)
+	return coroutine.yield({...})
+end
+
+function M.new(fn)
 	local obj = {
-		co = coroutine.create(fn),
-		t
+		t = 0,
+		co = coroutine.create(fn)
 	}
-	local mt = setmetatable(obj, { __index = M })
-	coroutine.resume(obj.co, mt, a, b, c, d)
-	return mt
+	return setmetatable(obj, { __index = M })
 end
 
 return M
