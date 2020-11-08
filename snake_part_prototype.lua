@@ -14,11 +14,11 @@ local type_direction = {
 }
 
 local function head_anim_done()
-	msg.post("#snake", HEAD_ANIM_DONE)
+	msg.post(":main/snake", ANIM_DONE)
 end
 
 local function tail_anim_done()
-	msg.post("#snake", TAIL_ANIM_DONE)
+	go.delete()
 end
 
 function setup_sprite(self)
@@ -28,13 +28,15 @@ function setup_sprite(self)
 	local anim_done = nil
 	if self.type == HEAD_ANIM then
 		anim_done = head_anim_done
+	elseif self.type == ANIM_DONE then
+		anim_done = tail_anim_fone
 	end
 	
 	-- rotate and translate
 	local url = msg.url("#sprite")
 	sprite.set_hflip(url, hflip == true)
 	sprite.set_vflip(url, vflip == true)
-	sprite.set_flipbook("#sprite", hash(id), anim_done)
+	sprite.set_flipbook(url, hash(id), anim_done)
 end
 
 function init(self)
@@ -42,7 +44,7 @@ function init(self)
 end
 
 function on_message(self, message_id)
-	if message_id == UPDATE_SPRITE then
+	if message_id == UPDATE then
 		setup_sprite(self)
 	end
 end

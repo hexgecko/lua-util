@@ -10,10 +10,7 @@ BODY = hash("body")
 TAIL_ANIM = hash("tail_anim")
 TAIL = hash("tail")
 
-HEAD_ANIM_DONE = hash("head_anim_done")
-TAIL_ANIM_DONE = hash("tail_anim_done")
-
-UPDATE_SPRITE = hash("update_sprite")
+UPDATE = hash("update")
 
 TICK = hash("tick")
 

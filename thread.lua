@@ -5,9 +5,9 @@ local M = {}
 function M:resume(...)
 	if coroutine.status(self.co) == "suspended" then
 		local ok,ret = coroutine.resume(self.co, ...)
-		if not ok then error(a) end
+		if not ok then error(ret) end
 		if ret ~= nil then
-			return table.unpack(ret)
+			return unpack(ret)
 		else
 			return nil
 		end

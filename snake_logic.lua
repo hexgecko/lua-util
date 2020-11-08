@@ -2,7 +2,7 @@ require("const")
 local fsm = require("fsm")
 local set = require("set")
 local queue = require("queue")
-local logic = require("logic")
+local thread = require("thread")
 
 local forward_state = set.new(EAST, WEST, NORTH, SOUTH)
 local move_input = set.new(LEFT, RIGHT, UP, DOWN)
@@ -14,32 +14,45 @@ local snake_queue = queue.new()
 local snake_dir = fsm.new({
 	{EAST, DOWN, EAST_TO_NORTH}
 })
-local snake_logic = logic.new(function(self)
+
+local snake_thread = thread.new(function(self)
 	while true:
 		self:wait_until(ANIM_DONE)
-		if forward_state:has(snake_dir.state) then
-			snake_dir:event(input_queue:pop())
-		else
+		
+		snake_dir:event(input_queue:pop())
+		if not forward_state:has(snake_dir.state) then
 			snake_dir:event(ANIM_DONE)
 		end
-		-- update position
+		
+		-- new position
+		
 		-- change head to type body
+		local head = snake_queue:peek()
+		go.set(head, "type", BODY)
+		msg.post(head, "type", UPDATE)
+		
 		-- push a head to the snake_queue
+		factory.create("#factory", nil, nil, {
+			x = x, y = y,
+			type = HEAD_ANIM,
+			direction = snake_dir.state
+		})
+		
 		-- pop snake_queue and change type to tail
+		local tail = snake_queue:pop()
+		go.set(tail, "type", TAIL_ANIM)
+		msg.post(tail, UPDATE)
 	end
 end)
 
 function init(self)
 	-- push the snake start position
+	snake_queue:push()
 end
 
-function on_message(self, message_id, message, sender)
+function on_message(self, message_id)
 	if message_id == ANIM_DONE then
-		if message.id == HEAD then
-			snake:logic(ANIM_DONE)
-		elseif message.id == TAIL then
-			-- go.delete(sender)
-		end
+		snake_thread:resume(ANIM_DONE)
 	end
 end
 
@@ -52,7 +65,7 @@ function on_input(self, action_id, action)
 			end
 		elseif vert_move:has(action_id) then
 			if horz_move:has(last_input) then
-				input_queue:push(last_input)
+				input_queue:push(action_id)
 				last_input = action_id
 			end
 		end

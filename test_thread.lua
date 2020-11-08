@@ -39,4 +39,4 @@ test = thread.new(function(self,sx,sy)
 end)
 
 local x,y = test:run(10, 11)
-print("x: "..tostring(x).." y:"..tostring(y))
+print("x: "..tostring(x).." y: "..tostring(y))
