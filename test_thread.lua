@@ -1,7 +1,7 @@
 require("const")
-local logic = require("logic")
+local thread = require("thread")
 
-local test = logic.new(function(self)
+local test = thread.new(function(self)
 	print("wait TICK")
 	self:wait_until(TICK, DOWN)
 	print("continue after TICK")
@@ -15,7 +15,7 @@ test:resume(UP)
 print("resume: TICK")
 test:resume(TICK)
 
-test = logic.new(function(self)
+test = thread.new(function(self)
 	print("before sleep")
 	self:sleep(0.5)
 	self:sleep(0.5)
@@ -25,12 +25,13 @@ end)
 test:run()
 local t = 0
 for i=0,11 do
-	test:resume(TICK, 0.1)
-	t = t + 0.1
+	local dt = 0.05 + math.random(10)/100
+	t = t + dt
 	print("time elapsed: "..tostring(t))
+	test:resume(TICK, dt)
 end
 
-test = logic.new(function(self,sx,sy)
+test = thread.new(function(self,sx,sy)
 	sx = sx + 1
 	sy = sy + 1
 	print("sx: "..sx.." sy: "..sy)

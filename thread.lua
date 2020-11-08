@@ -27,15 +27,15 @@ function M:wait_until(...)
 	until evset:has(ev)
 end
 
-function M:sleep(t)
-	local ev,dt
+function M:sleep(delay)
+	local t = delay + self.t
 	repeat
-		ev,dt = coroutine.yield()
+		local ev,dt = coroutine.yield()
 		if ev == TICK then
-			self.t = self.t + dt
+			t = t - dt
 		end
-	until self.t >= t
-	self.t = self.t - t
+	until t < 0
+	self.t = t
 end
 
 function M:yield(...)
