@@ -1,11 +1,15 @@
 local set = require("set")
+local sys = require("sys")
 
 local M = {}
 
 function M:resume(...)
 	if coroutine.status(self.co) == "suspended" then
 		local ok,ret = coroutine.resume(self.co, ...)
-		if not ok then error(ret) end
+		if not ok then
+			error(ret, 3)
+			sys.exit(-1)
+		end
 		if ret ~= nil then
 			return unpack(ret)
 		else

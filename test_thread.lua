@@ -40,3 +40,9 @@ end)
 
 local x,y = test:run(10, 11)
 print("x: "..tostring(x).." y: "..tostring(y))
+
+test = thread.new(function (self)
+	error("test error")
+end)
+
+test:run()

@@ -28,8 +28,9 @@ local snake_thread = thread.new(function(self)
 		
 		-- change head to type body
 		local head = snake_queue:peek()
-		go.set(head, "type", BODY)
-		msg.post(head, "type", UPDATE)
+		msg.post(head, "type", UPDATE_TYPE, {
+			type = BODY
+		})
 		
 		-- push a head to the snake_queue
 		factory.create("#factory", nil, nil, {
@@ -39,9 +40,11 @@ local snake_thread = thread.new(function(self)
 		})
 		
 		-- pop snake_queue and change type to tail
-		local tail = snake_queue:pop()
-		go.set(tail, "type", TAIL_ANIM)
-		msg.post(tail, UPDATE)
+		snake_queue:pop()
+		local tail = snake_queue:last()
+		msg.post(tail, "type", UPDATE_TYPE, {
+			type = TAIL_ANIM
+		})
 	end
 end)
 

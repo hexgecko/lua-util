@@ -43,8 +43,9 @@ function init(self)
 	setup_sprite(self)
 end
 
-function on_message(self, message_id)
-	if message_id == UPDATE then
+function on_message(self, message_id, message)
+	if message_id == UPDATE_TYPE then
+		go.set("type", message.type)
 		setup_sprite(self)
 	end
 end
