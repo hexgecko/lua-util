@@ -1,6 +1,6 @@
-local hash = require "hash"
+local hash = require("hash")
 
 local h = hash("hello")
 print(h)
-print(type(h))
+print(tonumber(h))
 print(hash("Foobar"))
