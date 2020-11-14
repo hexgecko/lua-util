@@ -1,4 +1,4 @@
-go.property("ship_url", msg.url())
+go.property("main_url", msg.url())
 go.property("rotation", 0)
 go.property("velocity", vmath.vector3())
 
@@ -65,7 +65,7 @@ end
 function on_message(self, message_id, message)
 	if message_id == COLLISION_RESPONSE then
 		if message.other_group == OFFSCREEN_ZONE then
-			msg.post(self.ship_url, SHIP_OFFSCREEN, { other_id = message.other_id})
+			msg.post(self.main_url, SHIP_OFFSCREEN, { other_id = message.other_id})
 		elseif message.other_group == DELETE_ZONE then
 			go.delete()
 		elseif message.other_group == ASTEROID then

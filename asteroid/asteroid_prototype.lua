@@ -8,7 +8,7 @@ local DELETE_ZONE = hash("delete_zone")
 local SHIP = hash("ship")
 local BULLET = hash("bullet")
 local ASTEROID_OFFSCREEN = hash("asteroid_offscreen")
-local ASTEROID_DESTROYED= hash("asteroid_destroyed")
+local ASTEROID_DESTROYED = hash("asteroid_destroyed")
 local COLLISION_RESPONSE = hash("collision_response")
 
 function update (self, dt)
