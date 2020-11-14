@@ -1,5 +1,3 @@
-go.property("rotation", 0)
-
 local VELOCITY = 20
 
 local DELETE_ZONE = hash("delete_zone")
@@ -7,7 +5,8 @@ local ASTEROID = hash("asteroid")
 local COLLISION_RESPONSE = hash("collision_response")
 
 function init(self)
-	self.velocity_per_second = vmath.vector3(sin(self.rotation, cos(self.rotation), 0)) * VELOCITY
+	local r = go.get("rotation")
+	self.velocity_per_second = vmath.vector3(sin(r.z, cos(r.z), 0)) * VELOCITY
 end
 
 function update(self, dt)

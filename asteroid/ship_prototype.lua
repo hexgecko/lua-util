@@ -1,5 +1,5 @@
-go.property("main_url", msg.url())
-go.property("rotation", 0)
+go.property("game_url", msg.url())
+go.property("rotation_speed", 0)
 go.property("velocity", vmath.vector3())
 
 local ROTATION_PER_SECOND = math.pi
@@ -29,12 +29,13 @@ end
 
 function update(self, dt)
 	if self.left then
-		self.rotation = self.rotation + ROTATION_PER_SECOND * dt
+		self.rotation_speed = ROTATION_PER_SECOND
+	elseif self.right then
+		self.rotation_speed = -ROTATION_PER_SECOND
+	else
+		self.rotation_speed = 0
 	end
-	if self.right then
-		self.rotation = self.rotation - ROTATION_PER_SECOND * dt
-	end
-  go.set("rotation", vmath.quat_rotation_z(self.rotation))
+  go.set("rotation", go.get("rotation") + vmath.quat_rotation_z(self.rotation))
 	if self.up then
 		self.velocity = self.velocity + vmath.vector3(sin(self.rotation, cos(self.rotation), 0)) * ACCELERATION
 		local velocity_length = vmath.length_sqr(selg.velocity)
@@ -42,7 +43,7 @@ function update(self, dt)
 			self.velocity = self.force * MAX_FORCE / force_length
 		end
 	end
-	go.set_position(go.get_position() + self.velocity)
+	go.set("position", go.get("position") + self.velocity)
 end
 
 function on_input(self, action_id, action)
@@ -65,7 +66,7 @@ end
 function on_message(self, message_id, message)
 	if message_id == COLLISION_RESPONSE then
 		if message.other_group == OFFSCREEN_ZONE then
-			msg.post(self.main_url, SHIP_OFFSCREEN, { other_id = message.other_id})
+			msg.post(self.game_url, SHIP_OFFSCREEN, { other_id = message.other_id})
 		elseif message.other_group == DELETE_ZONE then
 			go.delete()
 		elseif message.other_group == ASTEROID then
