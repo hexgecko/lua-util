@@ -14,7 +14,7 @@ local OFFSCREEN_ZONE = hash("offscreen_zone")
 local DELETE_ZONE = hash("delete_zone")
 local SHIP_OFFSCREEN = hash("ship_offscreen")
 local ASTEROID= hash("asteroid")
-local COLLISION_RESPONSE = hash("collision_response")
+local TRIGGER_RESPONSE = hash("trigger_response")
 
 function init(self)
 	msg.post(".", "aquire_input_focus")
@@ -64,9 +64,11 @@ function on_input(self, action_id, action)
 end
 
 function on_message(self, message_id, message)
-	if message_id == COLLISION_RESPONSE then
+	if message_id == TRIGGER_RESPONSE then
 		if message.other_group == OFFSCREEN_ZONE then
-			msg.post(self.game_url, SHIP_OFFSCREEN, { other_id = message.other_id})
+			msg.post(self.game_url, SHIP_OFFSCREEN, {
+				ship_url = go.get_id(),
+				other_id = message.other_id})
 		elseif message.other_group == DELETE_ZONE then
 			go.delete()
 		elseif message.other_group == ASTEROID then

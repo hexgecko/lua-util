@@ -44,9 +44,9 @@ function on_message(self, message, message_id, sender)
 		local pos = calc_clone_pos(sender)
 		factory.create("#ship_factory", pos, nil, {
 			game_url = go.get_id(),
-			rotation = go.get(sender, "rotation"),
-			rotation_speed = go.get("rotation_speed"),
-			velocity = go.get(sender, "velocity")
+			rotation = go.get(message.ship_url, "rotation"),
+			rotation_speed = go.get(message.ship_url, "rotation_speed"),
+			velocity = go.get(message.ship_url, "velocity")
 		}
 	elseif message_id == ASTEROID_OFFSCREEN then
 		local pos = calc_clone_pos(sender)
@@ -58,9 +58,9 @@ function on_message(self, message, message_id, sender)
 		end
 		factory.create(asteroid_factory, pos, nil, {
 			game_url = go.get_id(),
-			rotation = go.get(sender, "rotation"),
-			rotation_speed = go.get("rotation_speed"),
-			velocity = go.get(sender, "velocity")
+			rotation = go.get(message.asteroid_url, "rotation"),
+			rotation_speed = go.get(message.asteroid_destroyed_url,  "rotation_speed"),
+			velocity = go.get(message.asteroid_url, "velocity")
 		}
 	elseif message_id == ASTEROID_DESTROYED then
 		local pos = go.get_position(sender)
@@ -68,9 +68,8 @@ function on_message(self, message, message_id, sender)
 			for _,v in ipairs(random_spread) do
 				local r = math.random(2*math.pi)
 				local s = math.random(math.pi)
-				factory.create("#medium_asteroid_factory", pos, nil, {
+				factory.create("#medium_asteroid_factory",pos, vmath.quat_rotation_z(r), {
 					game_url = go.get_id(),
-					rotation = vmath.quat_rotation_z(r),
 					rotation_speed = s
 					velocity = v
 				})

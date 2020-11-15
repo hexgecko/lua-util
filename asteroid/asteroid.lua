@@ -8,7 +8,7 @@ local SHIP = hash("ship")
 local BULLET = hash("bullet")
 local ASTEROID_OFFSCREEN = hash("asteroid_offscreen")
 local ASTEROID_DESTROYED = hash("asteroid_destroyed")
-local COLLISION_RESPONSE = hash("collision_response")
+local TRIGGER_RESPONSE = hash("trigger_response")
 
 function update (self, dt)
 	go.set("rotation", go.get("rotation", vmath.quat_rotation_z(self.rotation_speed*dt))
@@ -16,11 +16,17 @@ function update (self, dt)
 end
 
 function on_messsage(self, message_id, message)
-	if message_id == COLLISION_RESPONSE then
+	if message_id == TRIGGER_RESPONSE then
 		if message.other_group == BULLET then
-			msg.post(self.game_url, ASTEROID_DESTROYED, { other_id = message.other_id })
+			msg.post(self.game_url, ASTEROID_DESTROYED, {
+				asteroid_url = go.get_id(),
+				other_id = message.other_id
+			})
 		elseif message.other_group == OFFSCREEN_ZONE then
-			mag.post(self.game_url, ASTEROID_OFFSCREEN, { other_id = message.other_id })
+			mag.post(self.game_url, ASTEROID_OFFSCREEN, {
+				asteroid_url = go.get_id(),
+				other_id = message.other_id
+			})
 		elseif message.other_group == DELETE_ZONE then
 			go.delete()
 	end
